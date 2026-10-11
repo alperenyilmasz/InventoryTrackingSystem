@@ -1,0 +1,4 @@
+# Apache: includes doğrudan çağrılmasın
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>

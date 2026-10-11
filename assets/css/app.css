@@ -1,0 +1,1184 @@
+/* Stok Takip — tema + gradient arka plan + mikro animasyonlar */
+:root {
+    --app-navy: #001f3f;
+    --app-blue: #3a6d8c;
+    --app-slate: #6a9ab0;
+    --app-sand: #ede8df;
+    --app-sand-muted: #d5cfc4;
+    --app-orange: #c07838;
+    --app-orange-hover: #a8652b;
+    --app-orange-active: #8f5220;
+    --app-orange-rgb: 192, 120, 56;
+    --app-page-bg: #001f3f;
+    --app-table-cream: #f2ede5;
+    --app-table-cream-head: #f9f6f1;
+    --app-table-cream-stripe: rgba(210, 202, 190, 0.32);
+    --app-card-cream-top: #faf8f4;
+    --app-card-cream-mid: #f2ede4;
+    --app-card-cream-bottom: #e5ddd2;
+    --app-input-bg: #f9f6f1;
+    --app-input-border: rgba(58, 109, 140, 0.38);
+    --app-surface-text: #1e2a35;
+    --app-surface-muted: #5c6772;
+    --app-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --app-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+    --app-radius-sm: 0.5rem;
+    --app-radius-md: 0.75rem;
+    --app-radius-lg: 1rem;
+    --app-radius-xl: 1.125rem;
+    --app-shadow-soft: 0 2px 8px rgba(0, 31, 63, 0.06), 0 1px 2px rgba(0, 31, 63, 0.04);
+    --app-shadow-card: 0 4px 24px rgba(0, 31, 63, 0.1), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+    --app-shadow-card-hover: 0 12px 40px rgba(0, 31, 63, 0.14), 0 4px 12px rgba(58, 109, 140, 0.08);
+    --bs-primary: #3a6d8c;
+    --bs-primary-rgb: 58, 109, 140;
+    --bs-link-color: #2d5670;
+    --bs-link-hover-color: #001f3f;
+    --bs-body-font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Sayfa iskeleti — arka plan: #001F3F #3A6D8C #6A9AB0 mavi tonları */
+.app-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--bs-body-font-family);
+    background-color: var(--app-navy);
+    background-image:
+        radial-gradient(ellipse 130% 85% at 50% -15%, rgba(106, 154, 176, 0.45) 0%, transparent 55%),
+        radial-gradient(ellipse 75% 65% at 105% 40%, rgba(58, 109, 140, 0.55) 0%, transparent 52%),
+        radial-gradient(ellipse 70% 60% at -10% 70%, rgba(0, 31, 63, 0.95) 0%, transparent 50%),
+        radial-gradient(ellipse 55% 45% at 75% 100%, rgba(58, 109, 140, 0.35) 0%, transparent 50%),
+        linear-gradient(168deg, #0a2848 0%, var(--app-navy) 32%, #153a55 58%, #0d2038 100%);
+    position: relative;
+}
+
+.app-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 1;
+    background:
+        radial-gradient(circle at 18% 28%, rgba(106, 154, 176, 0.22) 0%, transparent 38%),
+        radial-gradient(circle at 88% 18%, rgba(58, 109, 140, 0.28) 0%, transparent 36%),
+        radial-gradient(circle at 72% 88%, rgba(0, 31, 63, 0.45) 0%, transparent 42%);
+    animation: app-bg-drift 28s ease-in-out infinite alternate;
+}
+
+@keyframes app-bg-drift {
+    0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.04) translate(-1.5%, 1%);
+        opacity: 0.92;
+    }
+}
+
+/* Z-index: menü açılır listesi içeriğin altında kalmaması için */
+.app-page > .navbar-app {
+    position: relative;
+    z-index: 1030;
+}
+
+.app-page > .app-main,
+.app-page > .app-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* Modallar app-main dışında (body) — backdrop üstte kalmamalı */
+.modal-backdrop {
+    z-index: 1040;
+}
+
+.modal {
+    z-index: 1055;
+}
+
+.app-page .app-main {
+    flex: 1 0 auto;
+    animation: app-main-enter 0.65s var(--app-ease-out) both;
+}
+
+@keyframes app-main-enter {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.app-page .app-footer {
+    flex-shrink: 0;
+}
+
+/* Başlıklar — mavi gradient üzerinde okunaklı */
+.app-main h1,
+.app-main .h1,
+.app-main .h3,
+.app-main .h4 {
+    color: var(--app-sand);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.app-main .text-muted {
+    color: rgba(237, 232, 223, 0.78) !important;
+}
+
+.app-main .card .text-muted,
+.app-main .table .text-muted {
+    color: var(--app-surface-muted) !important;
+}
+
+/* Kart dışı, mavi zemin üzeri */
+.app-main > .mb-3 a:not(.btn) {
+    color: #d4eaf0;
+}
+
+.app-main > .mb-3 a:not(.btn):hover {
+    color: #fff;
+}
+
+/* Üst menü */
+.navbar-app {
+    background: linear-gradient(100deg, #00152d 0%, var(--app-navy) 35%, #0a3358 65%, var(--app-navy) 100%) !important;
+    border-bottom: none;
+    box-shadow:
+        0 4px 24px rgba(0, 31, 63, 0.38),
+        inset 0 -1px 0 rgba(106, 154, 176, 0.2);
+    position: relative;
+    animation: navbar-enter 0.5s var(--app-ease-out) both;
+}
+
+@keyframes navbar-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar-app::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--app-blue) 18%,
+        var(--app-slate) 45%,
+        var(--app-sand) 52%,
+        var(--app-slate) 58%,
+        var(--app-blue) 82%,
+        transparent 100%
+    );
+    background-size: 220% 100%;
+    animation: nav-border-flow 10s linear infinite;
+}
+
+@keyframes nav-border-flow {
+    0% {
+        background-position: 0% 0;
+    }
+    100% {
+        background-position: 220% 0;
+    }
+}
+
+.navbar-app .navbar-toggler {
+    border-color: rgba(237, 232, 223, 0.32);
+    transition: box-shadow 0.2s var(--app-ease-soft), transform 0.2s ease;
+}
+
+.navbar-app .navbar-toggler:hover {
+    box-shadow: 0 0 0 3px rgba(106, 154, 176, 0.35);
+}
+
+.navbar-app .nav-link {
+    padding: 0.5rem 0.65rem;
+    margin: 0 0.1rem;
+    border-radius: 0.4rem;
+    transition:
+        background 0.22s var(--app-ease-soft),
+        color 0.22s ease,
+        transform 0.2s ease;
+}
+
+.navbar-app .nav-link:hover {
+    background: rgba(106, 154, 176, 0.28);
+    color: var(--app-sand) !important;
+    transform: translateY(-1px);
+}
+
+.navbar-app .nav-link.active {
+    background: linear-gradient(145deg, rgba(58, 109, 140, 0.65), rgba(0, 31, 63, 0.45));
+    color: var(--app-sand) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Logo / marka */
+.navbar-brand-app {
+    margin-right: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    transition: transform 0.25s var(--app-ease-soft);
+}
+
+.navbar-brand-app:hover {
+    transform: scale(1.02);
+}
+
+.navbar-brand-app .brand-logo {
+    display: block;
+    height: 48px;
+    width: auto;
+    max-height: 48px;
+    max-width: 88px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35));
+    transition: filter 0.25s var(--app-ease-soft);
+}
+
+.navbar-brand-app:hover .brand-logo {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+.navbar-app #mainNav {
+    margin-top: 0.25rem;
+}
+
+@media (min-width: 992px) {
+    .navbar-app #mainNav {
+        margin-top: 0;
+        margin-left: 1.25rem;
+        padding-left: 1rem;
+        border-left: 1px solid rgba(106, 154, 176, 0.45);
+    }
+
+    .navbar-app .navbar-nav.me-auto {
+        gap: 0.15rem;
+    }
+}
+
+/* Kartlar — özet kutuları, filtre formu, tablolar */
+.app-main .card {
+    border: 1px solid rgba(106, 154, 176, 0.32);
+    border-radius: var(--app-radius-lg);
+    background: linear-gradient(
+        168deg,
+        var(--app-card-cream-top) 0%,
+        var(--app-card-cream-mid) 48%,
+        var(--app-card-cream-bottom) 100%
+    );
+    box-shadow: var(--app-shadow-card);
+    color: var(--app-surface-text);
+    overflow: hidden;
+    transition:
+        transform 0.32s var(--app-ease-out),
+        box-shadow 0.32s var(--app-ease-out),
+        border-color 0.25s ease;
+}
+
+.app-main .card-metric {
+    background: linear-gradient(
+        155deg,
+        var(--app-card-cream-top) 0%,
+        var(--app-table-cream) 48%,
+        var(--app-card-cream-bottom) 100%
+    );
+}
+
+.app-main .card-metric .card-body {
+    background: transparent;
+}
+
+/* Özet kutuları: koyu yazı (krem zemine uyumlu) */
+.app-main .card-metric .text-muted {
+    color: var(--app-surface-muted) !important;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+}
+
+.app-main .card-metric .fs-3.text-primary {
+    color: #0f3550 !important;
+}
+
+.app-main .card-metric .fs-3.text-success {
+    color: #14532d !important;
+}
+
+/* Özet kartları — renkli varyantlar */
+.app-main .card-metric--products {
+    background: linear-gradient(155deg, #eef5fa 0%, #dceaf2 50%, #cfe0ec 100%);
+    box-shadow:
+        0 4px 20px rgba(58, 109, 140, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.app-main .card-metric--products::before {
+    background: linear-gradient(90deg, var(--app-navy), var(--app-blue));
+}
+
+.app-main .card-metric--products:hover::before {
+    transform: scaleX(1);
+}
+
+.app-main .card-metric--products .text-muted {
+    color: #3a6d8c !important;
+}
+
+.app-main .card-metric--categories {
+    background: linear-gradient(155deg, #eef3f7 0%, #dde8ef 50%, #d4e0e8 100%);
+    box-shadow:
+        0 4px 20px rgba(106, 154, 176, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.app-main .card-metric--categories::before {
+    background: linear-gradient(90deg, var(--app-blue), var(--app-slate));
+}
+
+.app-main .card-metric--categories:hover::before {
+    transform: scaleX(1);
+}
+
+.app-main .card-metric--categories .text-muted {
+    color: #4a7d96 !important;
+}
+
+.app-main .card-metric--value {
+    background: linear-gradient(155deg, #eef8f1 0%, #dcf0e3 50%, #cce8d6 100%);
+    box-shadow:
+        0 4px 20px rgba(22, 101, 52, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.app-main .card-metric--value::before {
+    background: linear-gradient(90deg, #166534, #22a055);
+}
+
+.app-main .card-metric--value:hover::before {
+    transform: scaleX(1);
+}
+
+.app-main .card-metric--value .text-muted {
+    color: #15803d !important;
+}
+
+.app-main .card-metric--critical {
+    background: linear-gradient(155deg, #fdf3f3 0%, #fce4e4 50%, #f8d4d4 100%);
+    box-shadow:
+        0 4px 20px rgba(185, 28, 28, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.app-main .card-metric--critical::before {
+    background: linear-gradient(90deg, #b91c1c, var(--app-orange));
+}
+
+.app-main .card-metric--critical:hover::before {
+    transform: scaleX(1);
+}
+
+.app-main .card-metric--critical .text-muted {
+    color: #b45309 !important;
+}
+
+.app-main .card-metric--products:hover,
+.app-main .card-metric--categories:hover,
+.app-main .card-metric--value:hover,
+.app-main .card-metric--critical:hover {
+    box-shadow:
+        0 10px 32px rgba(0, 31, 63, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+/* Kritik ürün sayısı — kırmızı + nabız */
+@keyframes metric-critical-pulse {
+    0%,
+    100% {
+        color: #b91c1c;
+        opacity: 1;
+        text-shadow: 0 0 0 transparent;
+    }
+    50% {
+        color: #e02424;
+        opacity: 0.88;
+        text-shadow: 0 0 14px rgba(220, 38, 38, 0.55);
+    }
+}
+
+.app-main .metric-critical-pulse {
+    color: #b91c1c !important;
+    animation: metric-critical-pulse 1.15s ease-in-out infinite;
+}
+
+.app-main .card-metric a.small.metric-critical-link {
+    color: var(--app-surface-text) !important;
+    font-weight: 600;
+    text-decoration-color: rgba(185, 28, 28, 0.4);
+}
+
+.app-main .card-metric a.small.metric-critical-link:hover {
+    color: #b91c1c !important;
+}
+
+.app-main .card:hover:not(:has(.table)) {
+    transform: translateY(-3px);
+    box-shadow: var(--app-shadow-card-hover);
+    border-color: rgba(58, 109, 140, 0.38);
+}
+
+.app-main .card:has(.table):hover {
+    transform: none;
+    box-shadow: var(--app-shadow-card);
+    border-color: rgba(106, 154, 176, 0.38);
+}
+
+/* Özet panel — kategori özeti & kritik stok listesi hover */
+.app-main .card.card-dashboard-panel {
+    position: relative;
+}
+
+.app-main .card.card-dashboard-panel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    transform: scaleX(0.35);
+    transform-origin: left center;
+    transition: transform 0.4s var(--app-ease-out);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.app-main .card.card-dashboard-panel:not(.card-critical-list)::after {
+    background: linear-gradient(90deg, var(--app-navy), var(--app-blue));
+}
+
+.app-main .card.card-dashboard-panel.card-critical-list::after {
+    background: linear-gradient(90deg, #b91c1c, var(--app-orange));
+}
+
+.app-main .card.card-dashboard-panel:has(.table):hover {
+    transform: translateY(-4px);
+    border-color: rgba(58, 109, 140, 0.42) !important;
+    box-shadow: var(--app-shadow-card-hover);
+}
+
+.app-main .card.card-dashboard-panel:has(.table):hover::after {
+    transform: scaleX(1);
+}
+
+.app-main .card.card-dashboard-panel.card-critical-list:has(.table):hover {
+    border-color: rgba(192, 120, 56, 0.45) !important;
+    box-shadow:
+        0 12px 40px rgba(185, 28, 28, 0.12),
+        0 4px 12px rgba(58, 109, 140, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.app-main .card.card-dashboard-panel .card-header::before {
+    display: none;
+}
+
+.card-header {
+    background: linear-gradient(180deg, var(--app-table-cream-head) 0%, var(--app-table-cream) 100%) !important;
+    color: var(--app-surface-text);
+    border-color: rgba(58, 109, 140, 0.18) !important;
+    padding: 0.9rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    position: relative;
+}
+
+.app-main .card-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--app-blue), var(--app-slate));
+    border-radius: 0 2px 2px 0;
+}
+
+/* Tablolar — tutarlı hizalama, okunaklı başlık, zebra satır */
+.app-main .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--app-surface-text);
+    --bs-table-border-color: rgba(58, 109, 140, 0.14);
+    --bs-table-hover-bg: rgba(58, 109, 140, 0.07);
+    --bs-table-striped-bg: var(--app-table-cream-stripe);
+    --bs-table-active-bg: rgba(58, 109, 140, 0.1);
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9375rem;
+    color: var(--app-surface-text);
+}
+
+.app-main .card .table-responsive {
+    max-height: none;
+}
+
+.app-main .table > :not(caption) > * > * {
+    border-bottom-color: rgba(58, 109, 140, 0.14);
+    vertical-align: middle;
+}
+
+.app-main .card .table thead th,
+.app-main .table thead th,
+.app-main .table-light,
+.app-main thead.table-light th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 0.8rem 1.15rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+    color: var(--app-blue) !important;
+    background: linear-gradient(180deg, #f8f5f0 0%, #ebe5db 100%) !important;
+    border-bottom: 2px solid rgba(58, 109, 140, 0.16) !important;
+    border-top: none;
+    white-space: nowrap;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+}
+
+.app-main .card .table tbody td,
+.app-main .table tbody td {
+    padding: 0.8rem 1.15rem;
+    line-height: 1.45;
+}
+
+.app-main .card .table tbody tr:last-child td,
+.app-main .table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.app-main .table .text-end {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+}
+
+.app-main .table tbody tr {
+    transition: background-color 0.18s ease;
+}
+
+.app-main .table tbody tr:not(.table-critical-low):not(.table-critical-empty) > * {
+    background-color: var(--app-table-cream);
+}
+
+.app-main .table tbody tr:nth-child(even):not(.table-critical-low):not(.table-critical-empty) > * {
+    background-color: rgba(210, 202, 190, 0.35);
+}
+
+.app-main .table tbody tr:not(.table-critical-low):not(.table-critical-empty):hover > * {
+    background-color: rgba(58, 109, 140, 0.08) !important;
+}
+
+.app-main .table tbody td.text-center.text-muted {
+    padding: 2.75rem 1.25rem;
+    font-size: 0.9rem;
+    color: var(--app-surface-muted) !important;
+    background-color: var(--app-table-cream) !important;
+}
+
+.app-main .table td.text-end .btn + .btn,
+.app-main .table td.text-end form + .btn,
+.app-main .table td.text-end .btn + form {
+    margin-left: 0.4rem;
+}
+
+.app-main .card-footer {
+    background: linear-gradient(180deg, var(--app-table-cream-head) 0%, var(--app-table-cream) 100%);
+    border-top: 1px solid rgba(58, 109, 140, 0.14);
+    color: var(--app-surface-muted);
+    padding: 0.7rem 1.15rem;
+    font-size: 0.8125rem;
+}
+
+/* PHP'deki card-header bg-white — tablo üstü ile uyum */
+.app-main .card-header.bg-white {
+    background: linear-gradient(180deg, var(--app-table-cream-head) 0%, var(--app-table-cream) 100%) !important;
+    color: var(--app-surface-text) !important;
+    border-color: rgba(58, 109, 140, 0.18) !important;
+}
+
+.table-light {
+    --bs-table-bg: var(--app-table-cream-head);
+}
+
+.card-metric {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-metric::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--app-navy), var(--app-blue), var(--app-slate), var(--app-orange));
+    transform: scaleX(0.35);
+    transform-origin: left center;
+    transition: transform 0.4s var(--app-ease-out);
+}
+
+.card-metric:hover::before {
+    transform: scaleX(1);
+}
+
+.card-metric:hover {
+    transform: translateY(-4px);
+}
+
+/* Sayfa başlığı ve bölüm başlıkları */
+.app-main > h1.h3,
+.app-main > .d-flex:has(> h1.h3) {
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(106, 154, 176, 0.28);
+}
+
+.app-main h2.h5 {
+    color: var(--app-sand);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.app-main h2.h5.text-danger {
+    color: #fca5a5 !important;
+}
+
+/* Filtre formları */
+.app-main form.card.card-body.shadow-sm {
+    border-radius: var(--app-radius-md);
+    padding: 1.15rem 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+}
+
+.app-main form.card.card-body .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--app-surface-muted);
+    margin-bottom: 0.35rem;
+}
+
+/* Rozetler — hareket tablosu */
+.app-main .badge {
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    padding: 0.38em 0.72em;
+    border-radius: 999px;
+}
+
+.app-main .badge.text-bg-success {
+    background-color: #166534 !important;
+    box-shadow: 0 1px 3px rgba(22, 101, 52, 0.25);
+}
+
+.app-main .badge.text-bg-danger {
+    background-color: #b91c1c !important;
+    box-shadow: 0 1px 3px rgba(185, 28, 28, 0.25);
+}
+
+.app-main .stock-badge {
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.015em;
+    padding: 0.42em 0.75em;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.app-main .stock-badge--ok {
+    color: #fff !important;
+    background: linear-gradient(180deg, #15803d 0%, #166534 100%) !important;
+    box-shadow: 0 1px 4px rgba(22, 101, 52, 0.28);
+}
+
+.app-main .stock-badge--low {
+    color: #fff !important;
+    background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+    box-shadow: 0 1px 4px rgba(185, 28, 28, 0.28);
+}
+
+.app-main .stock-badge--empty {
+    color: #fff !important;
+    background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%) !important;
+    box-shadow: 0 1px 4px rgba(75, 85, 99, 0.28);
+}
+
+.app-main .table td.text-end .stock-badge {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Kategori özeti — stok durumu satır arka planları */
+.app-main .card-dashboard-panel:not(.card-critical-list) .table tbody tr.stock-row--low > * {
+    background-color: rgba(254, 226, 226, 0.55) !important;
+}
+
+.app-main .card-dashboard-panel:not(.card-critical-list) .table tbody tr.stock-row--low:hover > * {
+    background-color: rgba(254, 202, 202, 0.65) !important;
+}
+
+.app-main .card-dashboard-panel:not(.card-critical-list) .table tbody tr.stock-row--empty > * {
+    background-color: rgba(229, 231, 235, 0.7) !important;
+}
+
+.app-main .card-dashboard-panel:not(.card-critical-list) .table tbody tr.stock-row--empty:hover > * {
+    background-color: rgba(209, 213, 219, 0.8) !important;
+}
+
+/* Tablo içi küçük butonlar */
+.app-main .table .btn-sm {
+    padding: 0.28rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: var(--app-radius-sm);
+}
+
+/* Modallar — tema uyumu */
+.modal-content {
+    border: 1px solid rgba(58, 109, 140, 0.22);
+    border-radius: var(--app-radius-lg);
+    background: linear-gradient(168deg, var(--app-card-cream-top) 0%, var(--app-card-cream-mid) 100%);
+    box-shadow: 0 24px 64px rgba(0, 31, 63, 0.22);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(180deg, var(--app-table-cream-head) 0%, var(--app-table-cream) 100%);
+    border-bottom-color: rgba(58, 109, 140, 0.16);
+    padding: 1rem 1.25rem;
+}
+
+.modal-footer {
+    background: var(--app-table-cream-head);
+    border-top-color: rgba(58, 109, 140, 0.14);
+    padding: 0.85rem 1.25rem;
+}
+
+.modal-body {
+    padding: 1.25rem;
+    color: var(--app-surface-text);
+}
+
+.modal-title {
+    font-weight: 600;
+    color: var(--app-surface-text);
+}
+
+/* Uyarı kartları */
+.app-main .card.border-warning {
+    border-color: rgba(192, 120, 56, 0.45) !important;
+}
+
+.app-main .card.border-warning .card-header {
+    background: linear-gradient(180deg, rgba(254, 243, 199, 0.65) 0%, rgba(253, 230, 138, 0.35) 100%) !important;
+    color: #92400e;
+}
+
+.app-main .card.border-danger {
+    border-color: rgba(185, 28, 28, 0.35) !important;
+}
+
+/* Kritik stok listesi — kritik ürün kartı ile aynı tonlar */
+.app-main .card-critical-list {
+    border: 1px solid rgba(192, 120, 56, 0.28) !important;
+    background: linear-gradient(155deg, #fdf3f3 0%, #fce4e4 50%, #f8d4d4 100%);
+    box-shadow:
+        0 4px 20px rgba(185, 28, 28, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    overflow: hidden;
+}
+
+.app-main .card-critical-list .card-header {
+    background: linear-gradient(180deg, #fdf3f3 0%, #fce4e4 100%) !important;
+    color: #b45309 !important;
+    border-bottom-color: rgba(185, 28, 28, 0.14) !important;
+}
+
+/* Dropdown menü — krem zemin */
+.navbar-app .dropdown-menu {
+    border: 1px solid rgba(58, 109, 140, 0.22);
+    border-radius: var(--app-radius-md);
+    background: linear-gradient(180deg, var(--app-card-cream-top) 0%, var(--app-table-cream) 100%);
+    box-shadow: 0 12px 36px rgba(0, 31, 63, 0.18);
+    padding: 0.4rem;
+    animation: dropdown-fade 0.22s var(--app-ease-out) both;
+}
+
+.navbar-app .dropdown-item {
+    border-radius: var(--app-radius-sm);
+    font-size: 0.9rem;
+    padding: 0.45rem 0.85rem;
+    transition: background 0.15s ease;
+}
+
+.navbar-app .dropdown-item:hover {
+    background: rgba(58, 109, 140, 0.1);
+}
+
+.navbar-app .dropdown-item-text {
+    color: var(--app-surface-muted) !important;
+}
+
+/* Giriş / kayıt kartları */
+.app-main .card.shadow-sm:not(:has(.table)) {
+    border-radius: var(--app-radius-xl);
+    backdrop-filter: blur(6px);
+}
+
+.app-main .card.shadow-sm h1.h4 {
+    color: var(--app-blue);
+    text-shadow: none;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.app-main .card.shadow-sm .form-label {
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--app-surface-text);
+}
+
+.app-main .card.shadow-sm:not(:has(.table)) .auth-switch {
+    margin-top: 1.35rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(58, 109, 140, 0.16);
+    text-align: center;
+}
+
+.app-main .card.shadow-sm:not(:has(.table)) .auth-switch-label {
+    display: block;
+    margin-bottom: 0.55rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--app-surface-muted);
+    letter-spacing: 0.01em;
+}
+
+.app-main .card.shadow-sm:not(:has(.table)) .auth-switch-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.45rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--app-blue);
+    text-decoration: none;
+    border: 1px solid rgba(58, 109, 140, 0.28);
+    border-radius: var(--app-radius-sm);
+    background: linear-gradient(180deg, rgba(58, 109, 140, 0.07) 0%, rgba(58, 109, 140, 0.03) 100%);
+    box-shadow: 0 1px 2px rgba(0, 31, 63, 0.04);
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s var(--app-ease-soft);
+}
+
+.app-main .card.shadow-sm:not(:has(.table)) .auth-switch-link:hover {
+    color: #fff;
+    background: linear-gradient(180deg, var(--app-blue) 0%, #2d5670 100%);
+    border-color: var(--app-blue);
+    box-shadow: 0 4px 14px rgba(58, 109, 140, 0.28);
+    transform: translateY(-1px);
+}
+
+.app-main .card.shadow-sm:not(:has(.table)) .auth-switch-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(58, 109, 140, 0.22);
+}
+
+/* Genel uyarılar — birleşik */
+.app-main > .alert {
+    animation: alert-slide-in 0.45s var(--app-ease-out) both;
+    border: none;
+    border-left: 4px solid transparent;
+    border-radius: var(--app-radius-md);
+    box-shadow: 0 4px 20px rgba(0, 31, 63, 0.08);
+}
+
+.app-main > .alert-success {
+    border-left-color: #166534;
+}
+
+.app-main > .alert-danger {
+    border-left-color: #b91c1c;
+}
+
+.app-main > .alert-warning {
+    border-left-color: var(--app-orange);
+}
+
+@keyframes alert-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Butonlar */
+.btn {
+    border-radius: var(--app-radius-sm);
+    transition:
+        transform 0.2s var(--app-ease-soft),
+        box-shadow 0.25s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.btn-primary,
+.btn-outline-primary {
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(var(--app-orange-rgb), 0.32);
+}
+
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(var(--app-orange-rgb), 0.18);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--app-orange);
+    --bs-btn-border-color: var(--app-orange-hover);
+    --bs-btn-hover-bg: var(--app-orange-hover);
+    --bs-btn-hover-border-color: var(--app-orange-active);
+    --bs-btn-focus-shadow-rgb: var(--app-orange-rgb);
+    --bs-btn-active-bg: var(--app-orange-active);
+    --bs-btn-active-border-color: var(--app-orange-active);
+    --bs-btn-disabled-bg: #d8d2c9;
+    --bs-btn-disabled-border-color: #c8c2b8;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--app-orange);
+    --bs-btn-border-color: var(--app-orange);
+    --bs-btn-hover-bg: var(--app-orange);
+    --bs-btn-hover-border-color: var(--app-orange-hover);
+    --bs-btn-active-bg: var(--app-orange-hover);
+    --bs-btn-focus-shadow-rgb: var(--app-orange-rgb);
+}
+
+/* Form alanları — arama, select, stok formları */
+.app-main .form-control,
+.app-main textarea.form-control {
+    background-color: var(--app-input-bg);
+    border-color: var(--app-input-border);
+    color: var(--app-surface-text);
+    border-radius: var(--app-radius-sm);
+}
+
+.app-main .form-select {
+    --bs-form-select-bg: var(--app-input-bg);
+    background-color: var(--app-input-bg);
+    border-color: var(--app-input-border);
+    color: var(--app-surface-text);
+    border-radius: var(--app-radius-sm);
+}
+
+.app-main .form-control::placeholder {
+    color: rgba(30, 42, 53, 0.38);
+}
+
+.app-main .form-check-input {
+    background-color: var(--app-table-cream-head);
+    border-color: rgba(58, 109, 140, 0.5);
+}
+
+.app-main .form-check-input:checked {
+    background-color: var(--app-orange);
+    border-color: var(--app-orange-hover);
+}
+
+.app-main .form-check-label {
+    color: var(--app-surface-text);
+}
+
+/* Form odak — paletle uyumlu */
+.app-main .form-control:focus,
+.app-main .form-select:focus,
+.app-main textarea.form-control:focus {
+    background-color: #fff;
+    border-color: var(--app-slate);
+    box-shadow: 0 0 0 0.2rem rgba(58, 109, 140, 0.18);
+    color: var(--app-surface-text);
+}
+
+.text-primary {
+    color: var(--app-blue) !important;
+}
+
+/* Footer */
+.app-footer {
+    background: linear-gradient(180deg, #0a2848 0%, var(--app-navy) 40%, #001428 100%);
+    color: rgba(237, 232, 223, 0.9);
+    border-top: none !important;
+    box-shadow: 0 -6px 24px rgba(0, 31, 63, 0.2);
+    position: relative;
+}
+
+.app-footer::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--app-blue), var(--app-sand-muted), var(--app-blue), transparent);
+    opacity: 0.85;
+}
+
+.app-footer .container {
+    position: relative;
+}
+
+.app-footer a {
+    color: var(--app-sand);
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.app-footer a:hover {
+    color: #fff;
+}
+
+@keyframes dropdown-fade {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Uyarı satırları */
+.table-critical-low {
+    --bs-table-bg: rgba(254, 226, 226, 0.45);
+}
+
+.table-critical-low > * {
+    background-color: rgba(254, 226, 226, 0.45) !important;
+}
+
+.table-critical-low:hover > * {
+    background-color: rgba(254, 202, 202, 0.55) !important;
+}
+
+.table-critical-empty {
+    --bs-table-bg: rgba(var(--app-orange-rgb), 0.12);
+}
+
+.table-critical-empty > * {
+    background-color: rgba(var(--app-orange-rgb), 0.12) !important;
+}
+
+.table-critical-empty:hover > * {
+    background-color: rgba(var(--app-orange-rgb), 0.18) !important;
+}
+
+.card-metric .card-body {
+    padding: 1rem 1.25rem;
+}
+
+.navbar-app .navbar-nav .nav-link.active {
+    font-weight: 600;
+}
+
+/* hareket azaltılmış sistem tercihi */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .app-page::before,
+    .navbar-app::after,
+    .app-main > .alert {
+        animation: none !important;
+    }
+
+    .app-main {
+        animation: none !important;
+    }
+
+    .navbar-app {
+        animation: none !important;
+    }
+
+    .navbar-app .dropdown-menu {
+        animation: none !important;
+    }
+
+    .app-main .card:hover,
+    .card-metric:hover,
+    .app-main .card.card-dashboard-panel:has(.table):hover {
+        transform: none;
+    }
+
+    .btn-primary:hover,
+    .btn-outline-primary:hover,
+    .navbar-app .nav-link:hover {
+        transform: none;
+    }
+
+    .navbar-brand-app:hover {
+        transform: none;
+    }
+
+    .app-main .metric-critical-pulse {
+        animation: none !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+        color: #b91c1c !important;
+    }
+}

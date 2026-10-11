@@ -1,0 +1,24 @@
+# Sistem ve İşletim Sistemi Dosyaları
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE ve Editör Ayarları
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Log Dosyaları
+*.log
+error_log
+
+# Çevre Değişkenleri ve Özel Bağlantı Dosyaları
+.env
+config.local.php
+
+# Yedek ve Geçici Dosyalar
+* - Kopya.php
+* copy.php
+*.bak
+*.tmp
